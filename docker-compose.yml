@@ -1,32 +1,8 @@
 services:
-    app:
-        build:
-            context: './docker/dev'
-            dockerfile: Dockerfile
-        image: 'erugo-dev/app'
-        ports:
-            - '${APP_PORT:-80}:80'
-            - '${VITE_PORT:-5173}:5173'
-        environment:
-            SUPERVISOR_PHP_USER: 'erugo'
-            VITE_DEV_HOST: '192.168.0.24'
-        volumes:
-            - '.:/var/www/html'
-            # Use named volumes for platform-specific dependencies
-            # This prevents macOS node_modules from conflicting with Linux
-            - node_modules:/var/www/html/node_modules
-            - vendor:/var/www/html/vendor
-            # SQLite database in named volume to support WAL mode properly
-            - database:/var/www/html/storage/database
-        networks:
-            - erugo
-networks:
-    erugo:
-        driver: bridge
-volumes:
-    node_modules:
-        driver: local
-    vendor:
-        driver: local
-    database:
-        driver: local
+  app:
+    image: wardy784/erugo:latest
+    restart: unless-stopped
+    volumes:
+      - ./erugo-storage:/var/www/html/storage # Use a dedicated folder
+    ports:
+      - "9998:80"
